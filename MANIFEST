@@ -1,0 +1,15 @@
+Build.PL
+Changes
+examples/lookup-A.pl
+lib/Net/LibResolv.pm
+lib/Net/LibResolv.xs
+MANIFEST			This list of files
+t/00use.t
+t/01constants.t
+t/10res_query.t
+t/11res_search.t
+t/99pod.t
+Makefile.PL
+README
+LICENSE
+META.yml

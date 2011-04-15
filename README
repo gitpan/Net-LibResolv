@@ -1,0 +1,60 @@
+NAME
+    "Net::LibResolv" - a Perl wrapper around libresolv
+
+SYNOPSIS
+     use Net::LibResolv qw( res_query NS_C_IN NS_T_A );
+     use Net::DNS::Packet;
+ 
+     my $answer = res_query( "www.cpan.org", NS_C_IN, NS_T_A );
+     defined $answer or die "DNS failure\n";
+ 
+     foreach my $rr ( Net::DNS::Packet->new( \$answer )->answer ) {
+        print $rr->string, "\n";
+     }
+
+DESCRIPTION
+    The libresolv library provides functions to use the platform's standard
+    DNS resolver to perform DNS queries. This Perl module provides a
+    wrapping for the two primary functions, res_query(3) and res_search(3),
+    allowing them to be used from Perl.
+
+    The return value from each function is a byte buffer containing the
+    actual DNS response packet. This will need to be parsed somehow to
+    obtain the useful information out of it; most likely by using Net::DNS.
+
+FUNCTIONS
+  $answer = res_query( $dname, $class, $type )
+    Calls the res_query(3) function on the given domain name, class and type
+    number. Returns the answer byte buffer on success, or "undef" on
+    failure.
+
+    $dname should be a plain string. $class and $type should be numerical
+    codes. See the "CONSTANTS" section for convenient definitions.
+
+  $answer = res_search( $dname, $class, $type )
+    Calls the res_search(3) function on the given domain name, class and
+    type number. Returns the answer byte buffer on success, or "undef" on
+    failure.
+
+    $dname should be a plain string. $class and $type should be numerical
+    codes. See the "CONSTANTS" section for convenient definitions.
+
+CONSTANTS
+  Class IDs
+    The following set of constants define values for the $class parameter.
+    Typically only "NS_C_IN" is actually used, for Internet.
+
+     NS_C_IN NS_C_CHAOS NS_C_HS
+     NS_C_INVALD NS_C_NONE NS_C_ANY
+
+  Type IDs
+    The following are examples of constants define values for the $type
+    parameter. (They all follow the same naming pattern, named after the
+    record type, so only a few are listed here.)
+
+     NS_T_A NS_T_NS NS_T_CNAME NS_T_PTR NS_T_MX NS_T_TXT NS_T_SRV NS_T_AAAA
+     NS_T_INVALID NS_T_ANY
+
+AUTHOR
+    Paul Evans <leonerd@leonerd.org.uk>
+
