@@ -47,6 +47,10 @@ CONSTANTS
      NS_C_IN NS_C_CHAOS NS_C_HS
      NS_C_INVALD NS_C_NONE NS_C_ANY
 
+  $id = class_name2value( $name )
+  $name = class_value2name( $id )
+    Functions to convert between class names and ID values.
+
   Type IDs
     The following are examples of constants define values for the $type
     parameter. (They all follow the same naming pattern, named after the
@@ -54,6 +58,13 @@ CONSTANTS
 
      NS_T_A NS_T_NS NS_T_CNAME NS_T_PTR NS_T_MX NS_T_TXT NS_T_SRV NS_T_AAAA
      NS_T_INVALID NS_T_ANY
+
+  $id = type_name2value( $name )
+  $name = type_value2name( $id )
+    Functions to convert between type names and ID values.
+
+SEE ALSO
+    *   Net::DNS - Perl interface to the DNS resolver
 
 AUTHOR
     Paul Evans <leonerd@leonerd.org.uk>

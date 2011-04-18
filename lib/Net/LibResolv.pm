@@ -8,7 +8,7 @@ package Net::LibResolv;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Exporter 'import';
 our @EXPORT_OK = qw(
@@ -83,16 +83,26 @@ sub _setup_constants
 {
    my %args = @_;
 
+   my $name   = $args{name};
    my $prefix = $args{prefix};
    my $values = $args{values};
    my $tag    = $args{tag};
 
+   my %name2value = %$values;
+   my %value2name = reverse %name2value;
+
    require constant;
-   constant->import( "$prefix$_" => $values->{$_} ) for keys %$values;
+   constant->import( "$prefix$_" => $name2value{$_} ) for keys %name2value;
 
-   push @EXPORT_OK, map "$prefix$_", keys %$values;
+   push @EXPORT_OK, map "$prefix$_", keys %name2value;
 
-   $EXPORT_TAGS{$tag} = [ map "$prefix$_", keys %$values ];
+   $EXPORT_TAGS{$tag} = [ map "$prefix$_", keys %name2value ];
+
+   no strict 'refs';
+   *{"${name}_name2value"} = sub { $name2value{uc shift} };
+   *{"${name}_value2name"} = sub { $value2name{+shift} };
+
+   push @EXPORT_OK, "${name}_name2value", "${name}_value2name";
 }
 
 # These constants are defined by RFCs, primarily RFC 1035 and friends. We
@@ -107,9 +117,16 @@ Typically only C<NS_C_IN> is actually used, for Internet.
  NS_C_IN NS_C_CHAOS NS_C_HS
  NS_C_INVALD NS_C_NONE NS_C_ANY
 
+=head2 $id = class_name2value( $name )
+
+=head2 $name = class_value2name( $id )
+
+Functions to convert between class names and ID values.
+
 =cut
 
 _setup_constants
+   name   => "class",
    prefix => "NS_C_",
    tag    => ":classes",
    values => {
@@ -130,10 +147,17 @@ type, so only a few are listed here.)
  NS_T_A NS_T_NS NS_T_CNAME NS_T_PTR NS_T_MX NS_T_TXT NS_T_SRV NS_T_AAAA
  NS_T_INVALID NS_T_ANY
 
+=head2 $id = type_name2value( $name )
+
+=head2 $name = type_value2name( $id )
+
+Functions to convert between type names and ID values.
+
 =cut
 
 # The following list shamelessly stolen from <arpa/nameser.h>
 _setup_constants
+   name   => "type",
    prefix => "NS_T_",
    tag    => ":types",
    values => {
@@ -188,6 +212,16 @@ _setup_constants
       MAILA    => 254,
       ANY      => 255,
    };
+
+=head1 SEE ALSO
+
+=over 4
+
+=item *
+
+L<Net::DNS> - Perl interface to the DNS resolver
+
+=back
 
 =head1 AUTHOR
 

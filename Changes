@@ -1,4 +1,9 @@
 Revision history for Net-LibResolv
 
+0.02    CHANGES:
+         * Some OSes don't need to link against -lresolv; detect this in
+           Build.PL
+         * Provide type and class name<->ID value conversion functions
+
 0.01    First version, released on an unsuspecting world.
 

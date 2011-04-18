@@ -9,13 +9,16 @@ eval { require ExtUtils::CChecker; 1 } or
 my $cc = ExtUtils::CChecker->new();
 
 $cc->find_libs_for(
-   libs => [ "resolv" ],
+   diag => "cannot find library containing res_query(3)",
+   libs => [ "", "resolv" ],
    source => <<'EOF' );
 #include <netinet/in.h>
 #include <arpa/nameser.h>
 #include <resolv.h>
 int main(int argc, char *argv[]) {
-   void *q = &res_query;
+   /* Ignore the result; we only care that we can compile and link this program */
+   char answer[128];
+   res_query("example.com", 0, 0, answer, sizeof answer);
    return 0;
 }
 EOF
