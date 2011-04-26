@@ -8,17 +8,23 @@ package Net::LibResolv;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.02_001';
 
 use Exporter 'import';
 our @EXPORT_OK = qw(
    res_query
    res_search
+
+   $h_errno
 );
 our %EXPORT_TAGS;
 
+our $h_errno;
+
 require XSLoader;
 XSLoader::load( __PACKAGE__, $VERSION );
+
+$EXPORT_TAGS{":errors"} = [qw( HOST_NOT_FOUND NO_ADDRESS NO_DATA NO_RECOVERY TRY_AGAIN )];
 
 =head1 NAME
 
@@ -26,11 +32,11 @@ C<Net::LibResolv> - a Perl wrapper around F<libresolv>
 
 =head1 SYNOPSIS
 
- use Net::LibResolv qw( res_query NS_C_IN NS_T_A );
+ use Net::LibResolv qw( res_query NS_C_IN NS_T_A $h_errno );
  use Net::DNS::Packet;
  
  my $answer = res_query( "www.cpan.org", NS_C_IN, NS_T_A );
- defined $answer or die "DNS failure\n";
+ defined $answer or die "DNS failure - $h_errno\n";
  
  foreach my $rr ( Net::DNS::Packet->new( \$answer )->answer ) {
     print $rr->string, "\n";
@@ -58,7 +64,8 @@ information out of it; most likely by using L<Net::DNS>.
 =head2 $answer = res_query( $dname, $class, $type )
 
 Calls the C<res_query(3)> function on the given domain name, class and type
-number. Returns the answer byte buffer on success, or C<undef> on failure.
+number. Returns the answer byte buffer on success, or C<undef> on failure. On
+failure sets the value of the C<$h_errno> package variable.
 
 C<$dname> should be a plain string. C<$class> and C<$type> should be numerical
 codes. See the C<CONSTANTS> section for convenient definitions.
@@ -68,10 +75,31 @@ codes. See the C<CONSTANTS> section for convenient definitions.
 =head2 $answer = res_search( $dname, $class, $type )
 
 Calls the C<res_search(3)> function on the given domain name, class and type
-number. Returns the answer byte buffer on success, or C<undef> on failure.
+number. Returns the answer byte buffer on success, or C<undef> on failure. On
+failure sets the value of the C<$h_errno> package variable.
 
 C<$dname> should be a plain string. C<$class> and C<$type> should be numerical
 codes. See the C<CONSTANTS> section for convenient definitions.
+
+=cut
+
+=head1 VARIABLES
+
+=head2 $h_errno
+
+After an error from C<res_query> or C<res_search>, this variable will be set
+to the error value, as a dual-valued scalar. Its numerical value will be one
+of the error constants (see below); it string value will be an error message
+version of the same (similar to the C<$!> perl core variable).
+
+ if( !defined( my $answer = res_query( ... ) ) ) {
+    print "Try again later...\n" if $h_errno == TRY_AGAIN;
+ }
+
+Z<>
+
+ defined( my $answer = res_query( ... ) ) or
+    die "Cannot res_query() - $h_errno\n";
 
 =cut
 
@@ -212,6 +240,14 @@ _setup_constants
       MAILA    => 254,
       ANY      => 255,
    };
+
+=head2 Errors
+
+The following constants define error values for C<$h_errno>.
+
+ HOST_NOT_FOUND NO_ADDRESS NO_DATA NO_RECOVERY TRY_AGAIN
+
+The values of C<NO_ADDRESS> and C<NO_DATA> may be the same.
 
 =head1 SEE ALSO
 

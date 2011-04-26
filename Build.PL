@@ -12,6 +12,7 @@ $cc->find_libs_for(
    diag => "cannot find library containing res_query(3)",
    libs => [ "", "resolv" ],
    source => <<'EOF' );
+#include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/nameser.h>
 #include <resolv.h>
@@ -29,6 +30,7 @@ my $build = $cc->new_module_build(
       'ExtUtils::CChecker' => 0,
    },
    requires => {
+      'Exporter' => '5.57',
    },
    build_requires => {
       'ExtUtils::CChecker' => 0,
