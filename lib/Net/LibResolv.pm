@@ -8,7 +8,7 @@ package Net::LibResolv;
 use strict;
 use warnings;
 
-our $VERSION = '0.02_001';
+our $VERSION = '0.03';
 
 use Exporter 'import';
 our @EXPORT_OK = qw(
@@ -24,7 +24,7 @@ our $h_errno;
 require XSLoader;
 XSLoader::load( __PACKAGE__, $VERSION );
 
-$EXPORT_TAGS{":errors"} = [qw( HOST_NOT_FOUND NO_ADDRESS NO_DATA NO_RECOVERY TRY_AGAIN )];
+$EXPORT_TAGS{"errors"} = [qw( HOST_NOT_FOUND NO_ADDRESS NO_DATA NO_RECOVERY TRY_AGAIN )];
 
 =head1 NAME
 
@@ -156,7 +156,7 @@ Functions to convert between class names and ID values.
 _setup_constants
    name   => "class",
    prefix => "NS_C_",
-   tag    => ":classes",
+   tag    => "classes",
    values => {
       INVALID => 0,
       IN      => 1,
@@ -187,7 +187,7 @@ Functions to convert between type names and ID values.
 _setup_constants
    name   => "type",
    prefix => "NS_T_",
-   tag    => ":types",
+   tag    => "types",
    values => {
       INVALID  => 0,
       A        => 1,

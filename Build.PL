@@ -28,6 +28,7 @@ my $build = $cc->new_module_build(
    module_name => 'Net::LibResolv',
    configure_requires => {
       'ExtUtils::CChecker' => 0,
+      'Module::Build' => 0,
    },
    requires => {
       'Exporter' => '5.57',

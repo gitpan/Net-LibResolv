@@ -1,6 +1,6 @@
 Revision history for Net-LibResolv
 
-0.02_001 CHANGES:
+0.03    CHANGES:
          * Support $h_errno for error reporting
          * #include <sys/types.h> for OpenBSD
 

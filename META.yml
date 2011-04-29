@@ -10,7 +10,7 @@ build_requires:
   Test::More: 0
 configure_requires:
   ExtUtils::CChecker: 0
-  Module::Build: 0.38
+  Module::Build: 0
 dynamic_config: 1
 generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.110930'
 license: perl
@@ -21,9 +21,9 @@ name: Net-LibResolv
 provides:
   Net::LibResolv:
     file: lib/Net/LibResolv.pm
-    version: 0.02_001
+    version: 0.03
 requires:
   Exporter: 5.57
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.02_001
+version: 0.03
